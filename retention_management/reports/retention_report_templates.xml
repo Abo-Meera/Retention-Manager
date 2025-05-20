@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="retention_report_summary">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Retention Summary Report</h2>
+                    <div class="row mb16">
+                        <div class="col-3">
+                            <strong>Date From:</strong>
+                            <span t-esc="date_from" t-options="{'widget': 'date'}"/>
+                        </div>
+                        <div class="col-3">
+                            <strong>Date To:</strong>
+                            <span t-esc="date_to" t-options="{'widget': 'date'}"/>
+                        </div>
+                    </div>
+                    
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Partner</th>
+                                <th class="text-right">Total Retention</th>
+                                <th class="text-right">Released Amount</th>
+                                <th class="text-right">Remaining Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="partners" t-value="{}"/>
+                            <t t-foreach="retentions" t-as="retention">
+                                <t t-if="retention.partner_id.id not in partners">
+                                    <t t-set="partners[retention.partner_id.id]" t-value="{
+                                        'name': retention.partner_id.name,
+                                        'retention_amount': 0.0,
+                                        'released_amount': 0.0,
+                                        'remaining_amount': 0.0,
+                                        'states': [],
+                                    }"/>
+                                </t>
+                                <t t-set="partners[retention.partner_id.id]['retention_amount']" t-value="partners[retention.partner_id.id]['retention_amount'] + retention.retention_amount"/>
+                                <t t-set="partners[retention.partner_id.id]['released_amount']" t-value="partners[retention.partner_id.id]['released_amount'] + retention.released_amount"/>
+                                <t t-set="partners[retention.partner_id.id]['remaining_amount']" t-value="partners[retention.partner_id.id]['remaining_amount'] + retention.remaining_amount"/>
+                                <t t-if="retention.state not in partners[retention.partner_id.id]['states']">
+                                    <t t-set="partners[retention.partner_id.id]['states']" t-value="partners[retention.partner_id.id]['states'] + [retention.state]"/>
+                                </t>
+                            </t>
+                            
+                            <t t-foreach="partners.values()" t-as="partner">
+                                <tr>
+                                    <td><span t-esc="partner['name']"/></td>
+                                    <td class="text-right"><span t-esc="partner['retention_amount']" t-options="{'widget': 'monetary', 'display_currency': retentions[0].currency_id}"/></td>
+                                    <td class="text-right"><span t-esc="partner['released_amount']" t-options="{'widget': 'monetary', 'display_currency': retentions[0].currency_id}"/></td>
+                                    <td class="text-right"><span t-esc="partner['remaining_amount']" t-options="{'widget': 'monetary', 'display_currency': retentions[0].currency_id}"/></td>
+                                    <td>
+                                        <t t-foreach="partner['states']" t-as="state">
+                                            <span t-esc="dict(retentions._fields['state'].selection).get(state)"/>
+                                            <t t-if="not state_last">, </t>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </t>
+                            
+                            <tr class="border-top">
+                                <td><strong>Total</strong></td>
+                                <td class="text-right"><strong><span t-esc="sum(retentions.mapped('retention_amount'))" t-options="{'widget': 'monetary', 'display_currency': retentions[0].currency_id}"/></strong></td>
+                                <td class="text-right"><strong><span t-esc="sum(retentions.mapped('released_amount'))" t-options="{'widget': 'monetary', 'display_currency': retentions[0].currency_id}"/></strong></td>
+                                <td class="text-right"><strong><span t-esc="sum(retentions.mapped('remaining_amount'))" t-options="{'widget': 'monetary', 'display_currency': retentions[0].currency_id}"/></strong></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+    
+    <template id="retention_report_detailed">
+        <t t-call="web.html_container">
+            <t t-call="web.external_layout">
+                <div class="page">
+                    <h2>Retention Detailed Report</h2>
+                    <div class="row mb16">
+                        <div class="col-3">
+                            <strong>Date From:</strong>
+                            <span t-esc="date_from" t-options="{'widget': 'date'}"/>
+                        </div>
+                        <div class="col-3">
+                            <strong>Date To:</strong>
+                            <span t-esc="date_to" t-options="{'widget': 'date'}"/>
+                        </div>
+                    </div>
+                    
+                    <table class="table table-sm table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Reference</th>
+                                <th>Partner</th>
+                                <th>Date</th>
+                                <th class="text-right">Retention Amount</th>
+                                <th class="text-right">Released Amount</th>
+                                <th class="text-right">Remaining Amount</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="retentions" t-as="retention">
+                                <tr>
+                                    <td><span t-esc="retention.name"/></td>
+                                    <td><span t-esc="retention.partner_id.name"/></td>
+                                    <td><span t-esc="retention.date" t-options="{'widget': 'date'}"/></td>
+                                    <td class="text-right"><span t-esc="retention.retention_amount" t-options="{'widget': 'monetary', 'display_currency': retention.currency_id}"/></td>
+                                    <td class="text-right"><span t-esc="retention.released_amount" t-options="{'widget': 'monetary', 'display_currency': retention.currency_id}"/></td>
+                                    <td class="text-right"><span t-esc="retention.remaining_amount" t-options="{'widget': 'monetary', 'display_currency': retention.currency_id}"/></td>
+                                    <td><span t-esc="dict(retention._fields['state'].selection).get(retention.state)"/></td>
+                                </tr>
+                            </t>
+                            
+                            <tr class="border-top">
+                                <td colspan="3"><strong>Total</strong></td>
+                                <td class="text-right"><strong><span t-esc="sum(retentions.mapped('retention_amount'))" t-options="{'widget': 'monetary', 'display_currency': retentions[0].currency_id}"/></strong></td>
+                                <td class="text-right"><strong><span t-esc="sum(retentions.mapped('released_amount'))" t-options="{'widget': 'monetary', 'display_currency': retentions[0].currency_id}"/></strong></td>
+                                <td class="text-right"><strong><span t-esc="sum(retentions.mapped('remaining_amount'))" t-options="{'widget': 'monetary', 'display_currency': retentions[0].currency_id}"/></strong></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>

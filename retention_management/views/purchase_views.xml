@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="purchase_order_form_retention" model="ir.ui.view">
+        <field name="name">purchase.order.form.retention</field>
+        <field name="model">purchase.order</field>
+        <field name="inherit_id" ref="purchase.purchase_order_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_term_id']" position="after">
+                <field name="retention_product_id" invisible="1"/>
+                <field name="retention_line_id" invisible="1"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Retention" name="retention">
+                    <group>
+                        <group>
+                            <field name="retention_direction" widget="radio"/>
+                            <field name="retention_type" widget="radio"/>
+                            <field name="retention_percentage" attrs="{'invisible': [('retention_type', '!=', 'percentage')]}"/>
+                            <field name="retention_amount" widget="monetary"/>
+                        </group>
+                        <group>
+                            <button name="action_view_retention" type="object" 
+                                   string="View Retention" class="oe_highlight"
+                                   attrs="{'invisible': [('retention_line_id', '=', False)]}"
+                                   icon="fa-money"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

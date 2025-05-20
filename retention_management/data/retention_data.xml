@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- Retention Product -->
+        <record id="product_retention" model="product.product">
+            <field name="name">Retention</field>
+            <field name="default_code">RETENTION</field>
+            <field name="type">service</field>
+            <field name="sale_ok" eval="True"/>
+            <field name="purchase_ok" eval="False"/>
+            <field name="categ_id" ref="product.product_category_all"/>
+            <field name="taxes_id" eval="[(6, 0, [])]"/>
+            <field name="supplier_taxes_id" eval="[(6, 0, [])]"/>
+            <field name="uom_id" ref="uom.product_uom_unit"/>
+            <field name="uom_po_id" ref="uom.product_uom_unit"/>
+        </record>
+        
+        <!-- Scheduled Action for Auto Release -->
+        <record id="ir_cron_auto_release_retentions" model="ir.cron">
+            <field name="name">Retention: Auto Release</field>
+            <field name="model_id" ref="model_retention_line"/>
+            <field name="state">code</field>
+            <field name="code">model._auto_release_retentions()</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="numbercall">-1</field>
+            <field name="doall" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_retention" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.inherit.retention</field>
+        <field name="model">res.config.settings</field>
+        <field name="priority">50</field>
+        <field name="inherit_id" ref="account.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='invoicing_settings']" position="after">
+                <h2>Retention Management</h2>
+                <div class="row mt16 o_settings_container" id="retention_management">
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Default Retention</span>
+                            <div class="text-muted">
+                                Default percentage to use for retentions
+                            </div>
+                            <div class="content-group">
+                                <div class="mt16">
+                                    <field name="retention_percentage" class="o_light_label" widget="percentage"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane"/>
+                        <div class="o_setting_right_pane">
+                            <span class="o_form_label">Retention Accounts</span>
+                            <div class="text-muted">
+                                Configure retention accounting
+                            </div>
+                            <div class="content-group">
+                                <div class="row mt16">
+                                    <label for="retention_account_id" class="col-lg-3 o_light_label"/>
+                                    <field name="retention_account_id"/>
+                                </div>
+                                <div class="row">
+                                    <label for="retention_journal_id" class="col-lg-3 o_light_label"/>
+                                    <field name="retention_journal_id"/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6 o_setting_box">
+                        <div class="o_setting_left_pane">
+                            <field name="auto_retention_release"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="auto_retention_release"/>
+                            <div class="text-muted">
+                                Automatically release retentions after a defined period
+                            </div>
+                            <div class="content-group" attrs="{'invisible': [('auto_retention_release', '=', False)]}">
+                                <div class="mt16">
+                                    <field name="retention_release_days" class="oe_inline"/> days
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+        </field>
+    </record>
+</odoo>

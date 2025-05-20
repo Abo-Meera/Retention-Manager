@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_move_form_retention" model="ir.ui.view">
+        <field name="name">account.move.form.retention</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='payment_reference']" position="after">
+                <field name="retention_product_id" invisible="1"/>
+                <field name="retention_line_id" invisible="1"/>
+                <field name="related_retention_id" invisible="1"/>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="Retention" name="retention" 
+                      attrs="{'invisible': [('move_type', 'not in', ('out_invoice', 'out_refund'))]}">
+                    <group>
+                        <group>
+                            <field name="retention_type" widget="radio" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="retention_percentage" attrs="{'invisible': [('retention_type', '!=', 'percentage')], 'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="retention_amount" widget="monetary" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        </group>
+                        <group>
+                            <button name="action_view_retention" type="object" 
+                                   string="View Retention" class="oe_highlight"
+                                   attrs="{'invisible': [('retention_line_id', '=', False)]}"
+                                   icon="fa-money"/>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

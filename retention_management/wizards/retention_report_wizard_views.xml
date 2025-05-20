@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_retention_report_wizard_form" model="ir.ui.view">
+        <field name="name">retention.report.wizard.form</field>
+        <field name="model">retention.report.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Retention Report">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="partner_id"/>
+                        </group>
+                        <group>
+                            <field name="state"/>
+                            <field name="report_type" widget="radio"/>
+                            <field name="include_released"/>
+                        </group>
+                    </group>
+                </sheet>
+                <footer>
+                    <button name="action_generate_report" string="Generate Report" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_retention_report_wizard" model="ir.actions.act_window">
+        <field name="name">Retention Report</field>
+        <field name="res_model">retention.report.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_retention_reports" name="Reports" 
+              parent="menu_retention_root" sequence="90"/>
+              
+    <menuitem id="menu_retention_report" name="Retention Report" 
+              action="action_retention_report_wizard" parent="menu_retention_reports" sequence="1"/>
+</odoo>
